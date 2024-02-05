@@ -1,19 +1,29 @@
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
 import { User } from "./User";
 
+export type IOccurrence = {
+  id: string;
+  date: Date;
+  genrer: string;
+  local: string;
+  subject: string;
+  user: User;
+};
+
 @Entity()
-export class Ocurrence {
+export class Occurrence {
   @PrimaryColumn("uuid")
   id: string;
 
   @Column({
     type: "date",
   })
-  data: Date;
+  date: Date;
 
   @Column({
     type: "enum",
-    enum: ["masculino", "feminino"],
+    enum: ["masculino", "feminino", null],
+    nullable: true,
   })
   genrer: string;
 
@@ -26,7 +36,7 @@ export class Ocurrence {
   @ManyToOne(() => User, (user) => user.ocurrence)
   user: User;
 
-  constructor(ocurrence: Partial<Ocurrence>) {
+  constructor(ocurrence: IOccurrence) {
     Object.assign(this, ocurrence);
   }
 }

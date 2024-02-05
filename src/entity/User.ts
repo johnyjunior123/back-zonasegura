@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
-import { Ocurrence } from "./Occurrence";
+import { Occurrence } from "./Occurrence";
 import { hashing } from "../../helpers/hashing";
 
 export interface IUser {
@@ -45,8 +45,8 @@ export class User {
   @Column()
   updated_at: Date;
 
-  @OneToMany(() => Ocurrence, (ocurrence) => ocurrence.user)
-  ocurrence: Ocurrence[];
+  @OneToMany(() => Occurrence, (occurrence) => occurrence.user)
+  ocurrence: Occurrence[];
 
   constructor(user: IUser) {
     Object.assign(this, user);
