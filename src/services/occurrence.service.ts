@@ -22,17 +22,26 @@ export class OccurrenceService {
     }
   }
 
-  async findById(id: string): Promise<Occurrence> {
+  async findById(id: string, userId: string): Promise<Occurrence> {
     try {
       return await occurrenceRepository.findOneByOrFail({
         id: id,
+        user: {
+          id: userId,
+        },
       });
     } catch {
       throw new Error("ocorrẽncia não encontrada");
     }
   }
 
-  async findAll(): Promise<Occurrence[]> {
-    return await occurrenceRepository.find();
+  async findAll(userId: string): Promise<Occurrence[]> {
+    return await occurrenceRepository.find({
+      where: {
+        user: {
+          id: userId,
+        },
+      },
+    });
   }
 }
