@@ -2,7 +2,7 @@ FROM node:21-alpine
 
 RUN apk add bash
 
-USER 1000:1000
+USER root
 WORKDIR /home/node/app
 RUN chown -R 1000 /home/node/app 
 RUN chown -R 1000 /usr/local/lib/node_modules
