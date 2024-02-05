@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
-import { passwordTransformer } from "../utils/password.transformer"; 
-import { Ocurrence } from './Occurrence'
+import { Ocurrence } from "./Occurrence";
+import { hashing } from "../../helpers/hashing";
 
 export interface IUser {
   id: string;
@@ -15,24 +15,27 @@ export interface IUser {
 
 @Entity()
 export class User {
-  @PrimaryColumn('uuid')
+  @PrimaryColumn("uuid")
   id: string;
 
   @Column()
   name: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   cpf: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   email: string;
 
   @Column()
   birthday: Date;
-  
+
   @Column({
-    length: 255,
-    transformer: new passwordTransformer()
+    transformer: hashing,
   })
   password: string;
 
@@ -43,9 +46,9 @@ export class User {
   updated_at: Date;
 
   @OneToMany(() => Ocurrence, (ocurrence) => ocurrence.user)
-  ocurrence: Ocurrence[]
+  ocurrence: Ocurrence[];
 
   constructor(user: IUser) {
-    Object.assign(this, user)
+    Object.assign(this, user);
   }
 }
