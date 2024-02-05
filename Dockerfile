@@ -13,7 +13,7 @@ COPY ./package.json /home/node/app
 COPY . .
 
 RUN npm install
-
+USER node
 CMD ["npm", "run", "dev"]
 
 
