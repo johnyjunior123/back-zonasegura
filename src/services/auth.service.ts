@@ -19,12 +19,14 @@ export class AuthService {
           }
         );
         return {
-          ...user,
-          password: undefined,
+          user: {
+            ...user,
+            password: undefined,
+          },
           token,
         };
       } else {
-        throw new Error("CPF ou senha incorreta");
+        throw new Error("CPF ou senha inválido");
       }
     } catch (e) {
       if (e instanceof EntityNotFoundError) {

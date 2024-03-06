@@ -4,10 +4,10 @@ import { hashing } from "../../helpers/hashing";
 
 export interface IUser {
   id: string;
-  name: string;
+  fullName: string;
   cpf: string;
   email: string;
-  birthday: Date;
+  dob: Date;
   password: string;
   created_at: Date;
   updated_at: Date;
@@ -19,7 +19,7 @@ export class User {
   id: string;
 
   @Column()
-  name: string;
+  fullName: string;
 
   @Column({
     unique: true,
@@ -32,7 +32,7 @@ export class User {
   email: string;
 
   @Column()
-  birthday: Date;
+  dob: Date;
 
   @Column({
     transformer: hashing,

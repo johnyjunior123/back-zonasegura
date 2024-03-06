@@ -5,7 +5,9 @@ const userRepository = AppDataSource.getRepository(User);
 
 export class UserService {
   async createUser(data: ICreateUser): Promise<User | Error> {
+    console.log(data);
     const newUser = userFactory.create(data);
+    console.log(newUser);
     try {
       const user = await userRepository.save(newUser);
       return user;

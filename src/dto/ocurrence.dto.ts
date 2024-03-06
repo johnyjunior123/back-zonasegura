@@ -10,15 +10,10 @@ enum genrer {
 export class CreateOccurrenceDto {
   @IsNotEmpty({ message: "A data é obrigatorio" })
   date: Date;
-  @IsEnum(genrer, { message: "Genêro não identificado" })
   genrer: string;
   @IsNotEmpty()
   local: string;
-  @IsNotEmpty()
   subject: string;
-  @IsNotEmpty()
-  @IsUUID()
-  userId: string;
   constructor(data: IDataOccurrence) {
     Object.assign(this, data);
   }

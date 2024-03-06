@@ -4,9 +4,9 @@ import { User } from "./User";
 export type IOccurrence = {
   id: string;
   date: Date;
-  genrer: string;
+  genrer?: string;
   local: string;
-  subject: string;
+  subject?: string;
   user: User;
 };
 
@@ -25,13 +25,13 @@ export class Occurrence {
     enum: ["masculino", "feminino", null],
     nullable: true,
   })
-  genrer: string;
+  genrer?: string;
 
   @Column()
   local: string;
 
-  @Column()
-  subject: string;
+  @Column({ nullable: true })
+  subject?: string;
 
   @ManyToOne(() => User, (user) => user.ocurrence)
   user: User;

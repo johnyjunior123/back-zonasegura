@@ -10,10 +10,10 @@ export class userFactory {
   static create(data: ICreateUser) {
     return new User({
       id: v4(),
-      name: data.name,
+      fullName: data.fullName,
       cpf: data.cpf,
       email: data.email,
-      birthday: data.birthday,
+      dob: new Date(data.dob),
       password: data.password,
       created_at: new Date(),
       updated_at: new Date(),
