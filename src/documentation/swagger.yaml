@@ -1,0 +1,247 @@
+openapi: 3.1.0
+info:
+  title: API Zona Segura
+  description: Essa API tem como objetivo o gerenciamento de ocorrências do aplicativo Zona Segura
+  contact:
+    email: johny.junior@arapiraca.ufal.br
+  version: 1.0.0
+servers:
+  - url: https://back-zonasegura.onrender.com
+    description: API de produção
+paths:
+  /register:
+    post:
+      summary: Cadastro de Usuário
+      description: Essa rota é responsável para o cadastro do usuário
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+            example:
+              fullName: johny junior
+              cpf: "21153257025"
+              email: teste@gmail.com
+              dob: "2001-08-12"
+              password: teste1234
+      responses:
+        "201":
+          description: Criado
+        "400":
+          description: Usuário já existente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "usuário já existente"
+  /login:
+    post:
+      summary: Autenticação de Usuário
+      description: Essa rota é responsável por autenticar o usuário devolvendo-o um objeto com o token de autorização
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/loginUser"
+            example:
+              cpf: "21153257025"
+              password: teste123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: "#/components/schemas/authUser"
+                  token: string
+        "400":
+          description: Erro na autenticação
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+              example:
+                message: "CPF ou senha invalido"
+  /occurrence:
+    post:
+      summary: Criação de Ocorrência
+      description: Essa rota é responsável para receber e salvar ocorrências enviadas pelo usuário
+      tags:
+        - Occorências
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Occurrence"
+            example:
+              date: "2001-08-01"
+              local: "Rua campo do vasco, 50"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: "#/components/schemas/createdOccurrence"
+
+        "400":
+          description: Erro na criação
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+              example:
+                field: "date"
+                errors:
+                  isNotEmpty: "O local é obrigatório"
+    get:
+      summary: Consulta de Ocorrência especifica
+      description: Essa rota é responsável enviar a ocorrência que possua o id enviado e que foi feita pelo usuário
+      tags:
+        - Occorências
+      parameters:
+        - name: id
+          in: path
+          description: UUID da entidade
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Operação bem-sucedida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/createdOccurrence"
+        "401":
+          description: Não autorizado (sem token) ou token inválido
+        "404":
+          description: Recurso não encontrado
+  /occurrences:
+    get:
+      summary: Consulta de todas as ocorrências
+      description: Essa rota é responsável por enviar todas as ocorrências que foram feitas pelo usuário
+      tags:
+        - Occorências
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Operação bem-sucedida
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/createdOccurrence"
+
+        "401":
+          description: Não autorizado (sem token) ou token inválido
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        fullName:
+          type: string
+        cpf:
+          type: string
+        email:
+          type: string
+        dob:
+          type: string
+        password:
+          type: string
+    loginUser:
+      type: object
+      properties:
+        cpf:
+          type: string
+        password:
+          type: string
+    authUser:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+          properties:
+            type: object
+            id:
+              type: string
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+    Occurrence:
+      type: object
+      properties:
+        date:
+          type: string
+        local:
+          type: string
+        genrer:
+          type: string
+        subject:
+          type: string
+      required:
+        - date
+        - local
+    createdOccurrence:
+      allOf:
+        - $ref: "#/components/schemas/Occurrence"
+        - type: object
+          properties:
+            type: object
+            id:
+              type: string
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+
+    BadRequestResponse:
+      oneOf:
+        - $ref: "#/components/schemas/errorMessage"
+        - $ref: "#/components/schemas/ValidationError"
+
+    errorMessage:
+      type: object
+      properties:
+        message:
+          type: string
+
+    ValidationError:
+      type: array
+      items:
+        type: object
+        properties:
+          field:
+            type: string
+          errors:
+            type: object
+            properties:
+              error:
+                type: string
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
