@@ -8,6 +8,8 @@ info:
 servers:
   - url: https://back-zonasegura.onrender.com
     description: API de produção
+  - url: http://localhost:3000
+    description: API de desenvolvimento
 paths:
   /register:
     post:
@@ -109,32 +111,6 @@ paths:
                 field: "date"
                 errors:
                   isNotEmpty: "O local é obrigatório"
-    get:
-      summary: Consulta de Ocorrência especifica
-      description: Essa rota é responsável enviar a ocorrência que possua o id enviado e que foi feita pelo usuário
-      tags:
-        - Occorências
-      parameters:
-        - name: id
-          in: path
-          description: UUID da entidade
-          required: true
-          schema:
-            type: string
-            format: uuid
-      security:
-        - BearerAuth: []
-      responses:
-        "200":
-          description: Operação bem-sucedida
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/createdOccurrence"
-        "401":
-          description: Não autorizado (sem token) ou token inválido
-        "404":
-          description: Recurso não encontrado
   /occurrences:
     get:
       summary: Consulta de todas as ocorrências
@@ -155,6 +131,33 @@ paths:
 
         "401":
           description: Não autorizado (sem token) ou token inválido
+  /occurrence/{id}:
+    get:
+      summary: Consulta de Ocorrência especifica
+      description: Essa rota é responsável enviar a ocorrência que possua o id enviado e que foi feita pelo usuário
+      tags:
+        - Occorências
+      parameters:
+        - in: path
+          name: id
+          description: UUID da entidade
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Operação bem-sucedida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/createdOccurrence"
+        "401":
+          description: Não autorizado (sem token) ou token inválido
+        "404":
+          description: Recurso não encontrado
 
 components:
   schemas:

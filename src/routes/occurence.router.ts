@@ -18,7 +18,7 @@ ocurrenceRouter.post("/occurrence", verifyTokenMiddleware, async (req, res) => {
     userId: req.body.user.id,
   });
   if (occurrence instanceof Error) {
-    res.status(400).json({ message: "ocorrência já existente" });
+    return res.status(400).json({ message: "ocorrência já existente" });
   }
   res.status(200).json({ ...occurrence, user: undefined });
 });

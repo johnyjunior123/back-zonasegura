@@ -34,13 +34,13 @@ userRouter.post("/register", async (req, res) => {
       user instanceof QueryFailedError &&
       user.message.includes("violates unique constraint")
     ) {
-      res.status(400).json({ message: "usuário já existente" });
+      return res.status(400).json({ message: "usuário já existente" });
     }
     if (user instanceof Error) {
-      res.status(500).json({ message: "erro desconhecido" });
+      return res.status(500).json({ message: "erro desconhecido" });
     }
 
-    res.status(200).json({ ...user, password: undefined });
+    return res.status(200).json({ ...user, password: undefined });
   } catch (e) {
     console.log(e);
   }
